@@ -1,0 +1,1020 @@
+================================================================================
+                    DOCUMENTACIÓN COMPLETA DE ENDPOINTS API
+                           IESPRO - Clean Architecture
+================================================================================
+
+INFORMACIÓN GENERAL:
+- Base URL: https://localhost:7038 (HTTPS) o http://localhost:9192 (HTTP)
+- Puerto HTTPS: 7038
+- Puerto HTTP: 9192
+- Autenticación: JWT Bearer Token
+- Formato de respuesta: JSON con estructura ApiResponse<T>
+
+================================================================================
+                                AUTENTICACIÓN
+================================================================================
+
+1. LOGIN
+POST /api/auth/login
+Content-Type: application/json
+
+Request Body:
+{
+    "correo": "admin@iespro.com",
+    "contrasena": "Admin123!"
+}
+
+Response Exitosa:
+{
+    "success": true,
+    "mensaje": "Login exitoso",
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "tokenExpiration": "2024-01-15T20:30:00.000Z",
+        "usuario": {
+            "id": 1,
+            "nombre": "Admin",
+            "apellido": "Sistema",
+            "correo": "admin@iespro.com",
+            "idEmpresa": 1,
+            "idRol": 1,
+            "status": true
+        }
+    }
+}
+
+2. REFRESH TOKEN
+POST /api/auth/refresh
+Content-Type: application/json
+
+Request Body:
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+3. LOGOUT
+POST /api/auth/logout
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+4. VALIDAR TOKEN
+POST /api/auth/validate
+Content-Type: application/json
+
+Request Body:
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+5. OBTENER PERFIL
+GET /api/auth/me
+Authorization: Bearer {token}
+
+================================================================================
+                                USUARIOS
+================================================================================
+
+GET /api/usuarios
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del usuario (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/usuarios?page=1&pageSize=10
+GET /api/usuarios?id=1
+GET /api/usuarios?combo=true
+GET /api/usuarios?search=admin
+
+POST /api/usuarios
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "telefono": "5551234567",
+    "correo": "juan.perez@empresa.com",
+    "contrasena": "Password123!",
+    "idPuesto": 1,
+    "idRol": 2
+}
+
+PUT /api/usuarios/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Juan Carlos",
+    "apellido": "Pérez López",
+    "email": "juan.perez@empresa.com",
+    "telefono": "5551234567",
+    "direccion": "Calle Principal 123",
+    "idRol": 2,
+    "idDepartamento": 1,
+    "idPuesto": 1,
+    "idSucursal": 1
+}
+
+DELETE /api/usuarios/{id}
+Authorization: Bearer {token}
+
+CAMBIAR CONTRASEÑA:
+POST /api/usuarios/{id}/cambiar-contrasena
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "contraseñaActual": "Password123!",
+    "nuevaContraseña": "NewPassword123!",
+    "confirmarContraseña": "NewPassword123!"
+}
+
+================================================================================
+                                ROLES
+================================================================================
+
+GET /api/roles
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del rol (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/roles?page=1&pageSize=10
+GET /api/roles?id=1
+GET /api/roles?combo=true
+
+GET /api/roles/combo
+Authorization: Bearer {token}
+
+================================================================================
+                                PUESTOS
+================================================================================
+
+GET /api/puestos
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del puesto (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/puestos?page=1&pageSize=10
+GET /api/puestos?id=1
+GET /api/puestos?combo=true
+
+================================================================================
+                                DEPARTAMENTOS
+================================================================================
+
+GET /api/departamentos
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del departamento (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/departamentos?page=1&pageSize=10
+GET /api/departamentos?id=1
+GET /api/departamentos?combo=true
+
+POST /api/departamentos
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Recursos Humanos",
+    "descripcion": "Departamento de Recursos Humanos"
+}
+
+PUT /api/departamentos/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Recursos Humanos",
+    "descripcion": "Departamento de Recursos Humanos y Administración"
+}
+
+DELETE /api/departamentos/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                SUCURSALES
+================================================================================
+
+GET /api/sucursales
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico de la sucursal (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/sucursales?page=1&pageSize=10
+GET /api/sucursales?id=1
+GET /api/sucursales?combo=true
+
+POST /api/sucursales
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "SUC001",
+    "nombre": "Sucursal Centro",
+    "esMatriz": true,
+    "direccion": "Av. Principal 123",
+    "telefono": "5551234567",
+    "correo": "centro@empresa.com"
+}
+
+PUT /api/sucursales/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Sucursal Centro",
+    "descripcion": "Sucursal principal en el centro",
+    "direccion": "Av. Principal 123, Centro",
+    "telefono": "5551234567",
+    "email": "centro@empresa.com",
+    "responsable": "Juan Pérez"
+}
+
+DELETE /api/sucursales/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                ALMACENES
+================================================================================
+
+GET /api/almacen
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del almacén (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/almacen?page=1&pageSize=10
+GET /api/almacen?id=1
+GET /api/almacen?combo=true
+
+POST /api/almacen
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "ALM001",
+    "nombre": "Almacén Principal",
+    "descripcion": "Almacén principal de la empresa",
+    "idSucursal": 1
+}
+
+PUT /api/almacen/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "ALM001",
+    "nombre": "Almacén Principal",
+    "descripcion": "Almacén principal de la empresa",
+    "idSucursal": 1
+}
+
+DELETE /api/almacen/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                UBICACIONES
+================================================================================
+
+GET /api/ubicacion
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico de la ubicación (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Clave (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/ubicacion?page=1&pageSize=10
+GET /api/ubicacion?id=1
+GET /api/ubicacion?combo=true
+
+POST /api/ubicacion
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "UBI001",
+    "zona": "A",
+    "pasillo": "1",
+    "nivel": "1",
+    "subnivel": "A",
+    "descripcion": "Ubicación para repuestos",
+    "idSucursal": 1,
+    "idAlmacen": 1
+}
+
+PUT /api/ubicacion/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "UBI001",
+    "zona": "A",
+    "pasillo": "1",
+    "nivel": "1",
+    "subnivel": "A",
+    "descripcion": "Ubicación para repuestos automotrices",
+    "idSucursal": 1,
+    "idAlmacen": 1
+}
+
+DELETE /api/ubicacion/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                MARCAS
+================================================================================
+
+GET /api/marcas
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico de la marca (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/marcas?page=1&pageSize=10
+GET /api/marcas?id=1
+GET /api/marcas?combo=true
+
+POST /api/marcas
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "MAR001",
+    "nombre": "Toyota"
+}
+
+PUT /api/marcas/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "MAR001",
+    "nombre": "Toyota"
+}
+
+DELETE /api/marcas/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                TIPOS DE COMBUSTIBLE
+================================================================================
+
+GET /api/tiposcombustible
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del tipo de combustible (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/tiposcombustible?page=1&pageSize=10
+GET /api/tiposcombustible?id=1
+GET /api/tiposcombustible?combo=true
+
+================================================================================
+                                TIPOS DE UNIDAD
+================================================================================
+
+GET /api/tipounidad
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del tipo de unidad (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/tipounidad?page=1&pageSize=10
+GET /api/tipounidad?id=1
+GET /api/tipounidad?combo=true
+
+POST /api/tipounidad
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "TUN001",
+    "nombre": "Camión"
+}
+
+PUT /api/tipounidad/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "clave": "TUN001",
+    "nombre": "Camión de Carga"
+}
+
+DELETE /api/tipounidad/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                CLIENTES
+================================================================================
+
+GET /api/clientes
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del cliente (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y NombreComercial (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/clientes?page=1&pageSize=10
+GET /api/clientes?id=1
+GET /api/clientes?combo=true
+
+POST /api/clientes
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombreComercial": "Empresa ABC",
+    "razonSocial": "Empresa ABC, S.A. de C.V.",
+    "rfc": "ABC123456789",
+    "direccion": "Calle Principal 123",
+    "correo": "contacto@empresaabc.com",
+    "telefono": "5551234567",
+    "nombreContacto": "Juan Pérez",
+    "telefonoContacto": "5559876543",
+    "correoContacto": "juan.perez@empresaabc.com"
+}
+
+PUT /api/clientes/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombreComercial": "Empresa ABC",
+    "razonSocial": "Empresa ABC, S.A. de C.V.",
+    "rfc": "ABC123456789",
+    "direccion": "Calle Principal 123, Centro",
+    "email": "contacto@empresaabc.com",
+    "telefono": "5551234567",
+    "contacto": "Juan Pérez",
+    "telefonoContacto": "5559876543",
+    "emailContacto": "juan.perez@empresaabc.com",
+    "observaciones": "Cliente preferencial"
+}
+
+DELETE /api/clientes/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                ARTÍCULOS
+================================================================================
+
+GET /api/articulo
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del artículo (opcional)
+- page: Número de página (opcional)
+- pageSize: Tamaño de página (default: 10)
+- search: Término de búsqueda (opcional)
+- combo: true para obtener solo ID y Nombre (opcional)
+- status: Filtrar por status (opcional)
+
+Ejemplos:
+GET /api/articulo?page=1&pageSize=10
+GET /api/articulo?id=1
+GET /api/articulo?combo=true
+
+POST /api/articulo
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Filtro de Aceite",
+    "descripcion": "Filtro de aceite para motor",
+    "idMarca": 1,
+    "idModelo": 1,
+    "material": "Papel filtrante",
+    "resistencia": "Alta temperatura",
+    "duracion": 5000,
+    "compatibilidad": "Toyota Corolla 2018-2023",
+    "precioUnitario": 150.00,
+    "precioVentanilla": 180.00,
+    "codigoBarras": "1234567890123",
+    "serie": "FIL001",
+    "pesoPieza": 0.5,
+    "lote": "LOT2024001",
+    "fechaLote": "2024-01-15T00:00:00.000Z",
+    "piezasCaja": 1,
+    "tiempoVida": 12,
+    "factura": "FAC001"
+}
+
+PUT /api/articulo/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "nombre": "Filtro de Aceite Premium",
+    "descripcion": "Filtro de aceite premium para motor",
+    "idMarca": 1,
+    "idModelo": 1,
+    "material": "Papel filtrante premium",
+    "resistencia": "Alta temperatura y presión",
+    "duracion": 7500,
+    "compatibilidad": "Toyota Corolla 2018-2023",
+    "precioUnitario": 180.00,
+    "precioVentanilla": 220.00,
+    "codigoBarras": "1234567890123",
+    "serie": "FIL001",
+    "pesoPieza": 0.6,
+    "lote": "LOT2024001",
+    "fechaLote": "2024-01-15T00:00:00.000Z",
+    "piezasCaja": 1,
+    "tiempoVida": 18,
+    "factura": "FAC001"
+}
+
+DELETE /api/articulo/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                VEHÍCULOS
+================================================================================
+
+GET /api/vehiculo
+Authorization: Bearer {token}
+
+Parámetros de consulta:
+- id: ID específico del vehículo (opcional)
+- list: true para obtener lista completa (opcional)
+- combo: true para obtener solo ID y NumeroEconomico (opcional)
+- search: Término de búsqueda (opcional)
+- filter: Campo específico para filtrar (opcional)
+- page: Número de página (default: 1)
+- size: Tamaño de página (default: 10)
+
+Ejemplos:
+GET /api/vehiculo?page=1&size=10
+GET /api/vehiculo?id=1
+GET /api/vehiculo?combo=true
+GET /api/vehiculo?search=ABC123
+
+POST /api/vehiculo
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "numeroEconomico": "VEH001",
+    "idMarca": 1,
+    "idModelo": 1,
+    "placa": "ABC123",
+    "idPropietario": 1,
+    "serie": "1HGBH41JXMN109186",
+    "idTipoCombustible": 1,
+    "observaciones": "Vehículo en buen estado",
+    "idTipoUnidad": 1
+}
+
+POST /api/vehiculo/completo
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "numeroEconomico": "VEH001",
+    "nombreMarca": "Toyota",
+    "descripcionMarca": "Marca japonesa",
+    "nombreModelo": "Corolla",
+    "descripcionModelo": "Sedán compacto",
+    "placa": "ABC123",
+    "idPropietario": 1,
+    "serie": "1HGBH41JXMN109186",
+    "idTipoCombustible": 1,
+    "observaciones": "Vehículo en buen estado",
+    "idTipoUnidad": 1
+}
+
+PUT /api/vehiculo/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+    "numeroEconomico": "VEH001",
+    "idMarca": 1,
+    "idModelo": 1,
+    "placa": "ABC123",
+    "idPropietario": 1,
+    "serie": "1HGBH41JXMN109186",
+    "idTipoCombustible": 1,
+    "observaciones": "Vehículo en excelente estado",
+    "idTipoUnidad": 1
+}
+
+DELETE /api/vehiculo/{id}
+Authorization: Bearer {token}
+
+================================================================================
+                                MANEJO DE TOKENS
+================================================================================
+
+1. OBTENER TOKEN:
+- Hacer POST a /api/auth/login con credenciales
+- Guardar el token y refreshToken de la respuesta
+
+2. USAR TOKEN:
+- Incluir en header: Authorization: Bearer {token}
+- El token expira en 4 horas
+
+3. RENOVAR TOKEN:
+- Cuando el token expire, usar el refreshToken
+- POST a /api/auth/refresh con el refreshToken
+- Obtener nuevo token y refreshToken
+
+4. VALIDAR TOKEN:
+- POST a /api/auth/validate para verificar si el token es válido
+
+5. CERRAR SESIÓN:
+- POST a /api/auth/logout con el refreshToken
+
+================================================================================
+                                EJEMPLOS DE USO EN FRONTEND
+================================================================================
+
+1. LOGIN:
+```javascript
+const login = async (email, password) => {
+    try {
+        const response = await fetch('https://localhost:7038/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                correo: email,
+                contrasena: password
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Guardar tokens
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('refreshToken', data.data.refreshToken);
+            localStorage.setItem('user', JSON.stringify(data.data.usuario));
+            return data.data;
+        } else {
+            throw new Error(data.mensaje);
+        }
+    } catch (error) {
+        console.error('Error en login:', error);
+        throw error;
+    }
+};
+```
+
+2. OBTENER DATOS CON TOKEN:
+```javascript
+const getData = async (endpoint) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:7038/api/${endpoint}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            return data.data;
+        } else {
+            throw new Error(data.mensaje);
+        }
+    } catch (error) {
+        console.error('Error obteniendo datos:', error);
+        throw error;
+    }
+};
+```
+
+3. CREAR REGISTRO:
+```javascript
+const createRecord = async (endpoint, data) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:7038/api/${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            return result.data;
+        } else {
+            throw new Error(result.mensaje);
+        }
+    } catch (error) {
+        console.error('Error creando registro:', error);
+        throw error;
+    }
+};
+```
+
+4. ACTUALIZAR REGISTRO:
+```javascript
+const updateRecord = async (endpoint, id, data) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:7038/api/${endpoint}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            return result.data;
+        } else {
+            throw new Error(result.mensaje);
+        }
+    } catch (error) {
+        console.error('Error actualizando registro:', error);
+        throw error;
+    }
+};
+```
+
+5. ELIMINAR REGISTRO:
+```javascript
+const deleteRecord = async (endpoint, id) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:7038/api/${endpoint}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            return result.data;
+        } else {
+            throw new Error(result.mensaje);
+        }
+    } catch (error) {
+        console.error('Error eliminando registro:', error);
+        throw error;
+    }
+};
+```
+
+6. RENOVAR TOKEN:
+```javascript
+const refreshToken = async () => {
+    try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await fetch('https://localhost:7038/api/auth/refresh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                refreshToken: refreshToken
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('refreshToken', data.data.refreshToken);
+            return data.data;
+        } else {
+            throw new Error(data.mensaje);
+        }
+    } catch (error) {
+        console.error('Error renovando token:', error);
+        // Redirigir al login
+        localStorage.clear();
+        window.location.href = '/login';
+        throw error;
+    }
+};
+```
+
+7. INTERCEPTOR PARA RENOVAR TOKEN:
+```javascript
+const apiCall = async (url, options = {}) => {
+    try {
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+        
+        if (response.status === 401) {
+            // Token expirado, intentar renovar
+            try {
+                await refreshToken();
+                // Reintentar la llamada original
+                const newToken = localStorage.getItem('token');
+                const retryResponse = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Authorization': `Bearer ${newToken}`,
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                return retryResponse;
+            } catch (refreshError) {
+                // No se pudo renovar, redirigir al login
+                localStorage.clear();
+                window.location.href = '/login';
+                throw refreshError;
+            }
+        }
+        
+        return response;
+    } catch (error) {
+        console.error('Error en llamada API:', error);
+        throw error;
+    }
+};
+```
+
+================================================================================
+                                CREDENCIALES POR DEFECTO
+================================================================================
+
+Usuario Administrador:
+- Email: admin@iespro.com
+- Password: Admin123!
+
+================================================================================
+                                CÓDIGOS DE RESPUESTA
+================================================================================
+
+200: OK - Operación exitosa
+201: Created - Recurso creado exitosamente
+400: Bad Request - Datos de entrada inválidos
+401: Unauthorized - No autenticado o token inválido
+403: Forbidden - Usuario inactivo o sin permisos
+404: Not Found - Recurso no encontrado
+500: Internal Server Error - Error interno del servidor
+
+================================================================================
+                                ESTRUCTURA DE RESPUESTA
+================================================================================
+
+Respuesta Exitosa:
+{
+    "success": true,
+    "mensaje": "Operación exitosa",
+    "data": { ... }
+}
+
+Respuesta con Error:
+{
+    "success": false,
+    "mensaje": "Descripción del error",
+    "errors": ["Error 1", "Error 2"]
+}
+
+Respuesta con Paginación:
+{
+    "success": true,
+    "mensaje": "Datos obtenidos correctamente",
+    "data": {
+        "data": [...],
+        "pagination": {
+            "currentPage": 1,
+            "pageSize": 10,
+            "totalCount": 100,
+            "totalPages": 10
+        }
+    }
+}
+
+================================================================================
+                                NOTAS IMPORTANTES
+================================================================================
+
+1. Todos los endpoints requieren autenticación excepto /api/auth/login
+2. Los tokens expiran en 4 horas
+3. Usar refreshToken para renovar el access token
+4. Los IDs en las URLs son numéricos
+5. Las fechas deben enviarse en formato ISO 8601
+6. Los decimales deben enviarse con punto decimal
+7. Los campos opcionales pueden enviarse como null
+8. Los booleanos deben enviarse como true/false
+9. Las cadenas vacías se envían como ""
+10. Los arrays vacíos se envían como []
+
